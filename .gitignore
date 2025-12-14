@@ -18,3 +18,6 @@ web-build/
 *.log
 *.tmp
 
+
+# Local Netlify folder
+.netlify

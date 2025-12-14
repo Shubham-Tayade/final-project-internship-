@@ -17,7 +17,7 @@ import AIInsightsPanel from '../components/AIInsightsPanel';
 
 const { width, height } = Dimensions.get('window');
 
-export default function DashboardScreen() {
+export default function DashboardScreen({ navigation }) {
   const currentDate = new Date().toLocaleDateString('en-US', {
     weekday: 'long',
     year: 'numeric',
@@ -87,7 +87,12 @@ export default function DashboardScreen() {
         </View>
 
         {/* Charts Section */}
-        <ChartsSection />
+        <TouchableOpacity 
+          activeOpacity={0.9}
+          onPress={() => navigation.navigate('ChartsDetail', { chartType: 'incidents' })}
+        >
+          <ChartsSection />
+        </TouchableOpacity>
 
         {/* Field Reports */}
         <View style={styles.section}>
@@ -95,7 +100,11 @@ export default function DashboardScreen() {
             <Text style={styles.sectionTitle}>Latest Field Reports</Text>
           </View>
           <FieldReportsTable />
-          <TouchableOpacity style={styles.viewAllButton} activeOpacity={0.8}>
+          <TouchableOpacity 
+            style={styles.viewAllButton} 
+            activeOpacity={0.8}
+            onPress={() => navigation.navigate('Reports')}
+          >
             <Text style={styles.viewAllText}>View All Reports</Text>
           </TouchableOpacity>
         </View>
@@ -114,6 +123,31 @@ export default function DashboardScreen() {
             ONE NATION. ONE PLATFORM. — Unified Forest & Wildlife Data by PugArch Technology Pvt. Ltd.
           </Text>
         </LinearGradient>
+
+        {/* Bottom Navigation */}
+        <View style={styles.bottomNav}>
+          <TouchableOpacity 
+            style={[styles.navItem, styles.activeNavItem]}
+            onPress={() => {}}
+          >
+            <Text style={styles.navIcon}>🏠</Text>
+            <Text style={[styles.navText, styles.activeNavText]}>Home</Text>
+          </TouchableOpacity>
+          <TouchableOpacity 
+            style={styles.navItem}
+            onPress={() => navigation.navigate('Reports')}
+          >
+            <Text style={styles.navIcon}>📊</Text>
+            <Text style={styles.navText}>Reports</Text>
+          </TouchableOpacity>
+          <TouchableOpacity 
+            style={styles.navItem}
+            onPress={() => navigation.navigate('ChartsDetail', { chartType: 'incidents' })}
+          >
+            <Text style={styles.navIcon}>📈</Text>
+            <Text style={styles.navText}>Charts</Text>
+          </TouchableOpacity>
+        </View>
       </ScrollView>
     </SafeAreaView>
   );
@@ -269,6 +303,48 @@ const styles = StyleSheet.create({
     lineHeight: 18,
     fontWeight: '500',
     letterSpacing: 0.3,
+  },
+  bottomNav: {
+    flexDirection: 'row',
+    backgroundColor: '#fff',
+    borderTopWidth: 1,
+    borderTopColor: '#e0e0e0',
+    paddingVertical: 10,
+    paddingBottom: Platform.OS === 'ios' ? 20 : 10,
+    ...Platform.select({
+      ios: {
+        shadowColor: '#000',
+        shadowOffset: { width: 0, height: -2 },
+        shadowOpacity: 0.1,
+        shadowRadius: 4,
+      },
+      android: {
+        elevation: 8,
+      },
+    }),
+  },
+  navItem: {
+    flex: 1,
+    alignItems: 'center',
+    paddingVertical: 8,
+  },
+  activeNavItem: {
+    backgroundColor: '#f0f8f4',
+    borderRadius: 12,
+    marginHorizontal: 5,
+  },
+  navIcon: {
+    fontSize: 24,
+    marginBottom: 4,
+  },
+  navText: {
+    fontSize: 12,
+    color: '#999',
+    fontWeight: '500',
+  },
+  activeNavText: {
+    color: '#2c6e49',
+    fontWeight: '700',
   },
 });
 

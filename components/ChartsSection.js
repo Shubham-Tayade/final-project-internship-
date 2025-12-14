@@ -1,5 +1,5 @@
-import React from 'react';
-import { View, Text, StyleSheet, Dimensions, Platform, ScrollView } from 'react-native';
+import React, { useState } from 'react';
+import { View, Text, StyleSheet, Dimensions, Platform, ScrollView, TouchableOpacity } from 'react-native';
 import { LineChart, BarChart, PieChart } from 'react-native-chart-kit';
 
 const { width } = Dimensions.get('window');
@@ -78,10 +78,16 @@ export default function ChartsSection() {
     barPercentage: 0.7,
   };
 
+  const [activeChart, setActiveChart] = useState(null);
+
   return (
     <View>
       {/* Incidents Chart */}
-      <View style={styles.chartContainer}>
+      <TouchableOpacity 
+        activeOpacity={0.9}
+        onPress={() => setActiveChart('incidents')}
+        style={[styles.chartContainer, activeChart === 'incidents' && styles.activeChart]}
+      >
         <Text style={styles.chartTitle}>Incidents Reported vs Resolved (State-wise)</Text>
         <View style={styles.chartWrapper}>
           <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.scrollContent}>
@@ -98,10 +104,14 @@ export default function ChartsSection() {
             />
           </ScrollView>
         </View>
-      </View>
+      </TouchableOpacity>
 
       {/* Wildlife Conflict Types */}
-      <View style={styles.chartContainer}>
+      <TouchableOpacity 
+        activeOpacity={0.9}
+        onPress={() => setActiveChart('conflict')}
+        style={[styles.chartContainer, activeChart === 'conflict' && styles.activeChart]}
+      >
         <Text style={styles.chartTitle}>Wildlife Conflict Types</Text>
         <View style={styles.chartWrapper}>
           <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.scrollContent}>
@@ -117,10 +127,14 @@ export default function ChartsSection() {
             />
           </ScrollView>
         </View>
-      </View>
+      </TouchableOpacity>
 
       {/* Patrol Activity Trends */}
-      <View style={styles.chartContainer}>
+      <TouchableOpacity 
+        activeOpacity={0.9}
+        onPress={() => setActiveChart('patrol')}
+        style={[styles.chartContainer, activeChart === 'patrol' && styles.activeChart]}
+      >
         <Text style={styles.chartTitle}>Patrol Activity Trends (Last 30 Days)</Text>
         <View style={styles.chartWrapper}>
           <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.scrollContent}>
@@ -134,7 +148,7 @@ export default function ChartsSection() {
             />
           </ScrollView>
         </View>
-      </View>
+      </TouchableOpacity>
 
       {/* Alerts Heatmap Placeholder */}
       <View style={styles.chartContainer}>
@@ -173,6 +187,11 @@ const styles = StyleSheet.create({
     color: '#1a535c',
     marginBottom: 15,
     letterSpacing: 0.3,
+  },
+  activeChart: {
+    borderWidth: 2,
+    borderColor: '#2c6e49',
+    transform: [{ scale: 0.98 }],
   },
   chartWrapper: {
     overflow: 'hidden',
