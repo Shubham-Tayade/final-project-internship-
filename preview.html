@@ -1,0 +1,585 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Forest & Wildlife Dashboard - Preview</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background-color: #f4f7f6;
+            padding: 0;
+            margin: 0;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            min-height: 100vh;
+        }
+
+        .container-wrapper {
+            max-width: 420px;
+            width: 100%;
+            background-color: #f4f7f6;
+            box-shadow: 0 0 20px rgba(0,0,0,0.1);
+            min-height: 100vh;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #2c6e49 0%, #4c956c 100%);
+            color: white;
+            padding: 20px;
+            padding-top: 30px;
+            border-bottom-left-radius: 20px;
+            border-bottom-right-radius: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        }
+
+        .header-title {
+            font-size: 28px;
+            font-weight: 700;
+            margin-bottom: 5px;
+            letter-spacing: 0.5px;
+        }
+
+        .header-subtitle {
+            font-size: 16px;
+            color: rgba(255, 255, 255, 0.9);
+            font-weight: 600;
+        }
+
+        .welcome-card {
+            margin: 0 20px 15px;
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0 6px 20px rgba(0,0,0,0.15);
+        }
+
+        .welcome-gradient {
+            background: linear-gradient(135deg, #2c6e49 0%, #4c956c 100%);
+            padding: 20px;
+        }
+
+        .welcome-title {
+            font-size: 22px;
+            font-weight: 700;
+            color: white;
+            margin-bottom: 5px;
+        }
+
+        .welcome-date {
+            font-size: 14px;
+            color: rgba(255, 255, 255, 0.9);
+        }
+
+        .metrics-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+
+        .metric-card {
+            background: white;
+            padding: 18px;
+            border-radius: 16px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            margin-bottom: 12px;
+        }
+
+        .metric-title {
+            font-size: 12px;
+            color: #666;
+            margin-bottom: 8px;
+            font-weight: 500;
+        }
+
+        .metric-value {
+            font-size: 26px;
+            font-weight: 700;
+            color: #1a535c;
+            margin-bottom: 8px;
+            letter-spacing: 0.5px;
+        }
+
+        .metric-change {
+            font-size: 11px;
+            font-weight: 500;
+        }
+
+        .positive { color: #4caf50; }
+        .negative { color: #f44336; }
+
+        .section {
+            background: white;
+            margin: 10px 15px;
+            padding: 18px;
+            border-radius: 20px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+        }
+
+        .section-title {
+            font-size: 18px;
+            font-weight: 700;
+            color: #1a535c;
+            margin-bottom: 15px;
+            letter-spacing: 0.3px;
+        }
+
+        .chart-placeholder {
+            height: 220px;
+            background: #e8f5e9;
+            border-radius: 10px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            border: 2px dashed #a8d5a3;
+            margin-bottom: 15px;
+        }
+
+        .chart-title {
+            font-size: 18px;
+            font-weight: bold;
+            color: #2d5016;
+            margin-bottom: 5px;
+        }
+
+        .chart-subtitle {
+            font-size: 12px;
+            color: #666;
+        }
+
+        .table-container {
+            overflow-x: auto;
+            margin-bottom: 15px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 11px;
+        }
+
+        th {
+            background: #2d5016;
+            color: white;
+            padding: 12px 8px;
+            text-align: center;
+            font-weight: bold;
+            font-size: 12px;
+        }
+
+        td {
+            padding: 12px 8px;
+            text-align: center;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .status-badge {
+            display: inline-block;
+            padding: 4px 8px;
+            border-radius: 12px;
+            color: white;
+            font-size: 10px;
+            font-weight: 600;
+        }
+
+        .status-resolved { background: #4caf50; }
+        .status-unresolved { background: #f44336; }
+        .status-pending { background: #ff9800; }
+
+        .view-all-btn {
+            background: #2c6e49;
+            color: white;
+            padding: 14px;
+            border-radius: 12px;
+            text-align: center;
+            font-weight: 700;
+            font-size: 15px;
+            cursor: pointer;
+            margin-top: 15px;
+            box-shadow: 0 4px 12px rgba(44, 110, 73, 0.3);
+            transition: transform 0.2s;
+        }
+
+        .view-all-btn:hover {
+            transform: translateY(-2px);
+        }
+
+        .hotspot-item {
+            display: flex;
+            align-items: center;
+            margin-bottom: 12px;
+            padding: 10px;
+            background: #f9f9f9;
+            border-radius: 8px;
+        }
+
+        .hotspot-number {
+            width: 30px;
+            height: 30px;
+            border-radius: 15px;
+            background: #2d5016;
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            margin-right: 12px;
+        }
+
+        .hotspot-content {
+            flex: 1;
+            margin-right: 10px;
+        }
+
+        .hotspot-name {
+            font-size: 13px;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 5px;
+        }
+
+        .risk-bar-container {
+            height: 6px;
+            background: #e0e0e0;
+            border-radius: 3px;
+            overflow: hidden;
+        }
+
+        .risk-bar {
+            height: 100%;
+            border-radius: 3px;
+        }
+
+        .risk-high { background: #f44336; }
+        .risk-medium { background: #ff9800; }
+        .risk-low { background: #ffc107; }
+
+        .risk-text {
+            font-size: 12px;
+            font-weight: bold;
+            min-width: 70px;
+            text-align: right;
+        }
+
+        .forecast-card {
+            background: #e8f5e9;
+            padding: 15px;
+            border-radius: 8px;
+            text-align: center;
+        }
+
+        .forecast-value {
+            font-size: 24px;
+            font-weight: bold;
+            color: #2d5016;
+            margin-bottom: 5px;
+        }
+
+        .forecast-label {
+            font-size: 12px;
+            color: #666;
+        }
+
+        .alert-item {
+            display: flex;
+            align-items: center;
+            margin-bottom: 12px;
+            padding: 10px;
+            background: #fff3e0;
+            border-radius: 8px;
+            border-left: 4px solid #ff9800;
+        }
+
+        .alert-dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 5px;
+            background: #f44336;
+            margin-right: 10px;
+        }
+
+        .alert-text {
+            flex: 1;
+            font-size: 13px;
+            color: #333;
+            line-height: 18px;
+        }
+
+        .alert-location {
+            font-weight: bold;
+            color: #2d5016;
+        }
+
+        .footer {
+            background: #2d5016;
+            color: white;
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+            font-size: 12px;
+            line-height: 18px;
+            margin-top: 20px;
+        }
+
+        .ai-title {
+            font-size: 20px;
+            font-weight: bold;
+            color: #2d5016;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <div class="container-wrapper">
+    <!-- Header -->
+    <div class="header">
+        <div class="header-title">Dashboard Home</div>
+        <div class="header-subtitle">MoEFCC</div>
+    </div>
+
+    <!-- Welcome Card -->
+    <div class="welcome-card">
+        <div class="welcome-gradient">
+            <div class="welcome-title">Welcome, Ranger!</div>
+            <div class="welcome-date" id="current-date">Loading date...</div>
+        </div>
+    </div>
+
+    <!-- Metrics Cards -->
+    <div class="metrics-grid">
+        <div class="metric-card">
+            <div class="metric-title">Active Patrols Today</div>
+            <div class="metric-value">1,482</div>
+            <div class="metric-change positive">+5.2% vs yesterday</div>
+        </div>
+        <div class="metric-card">
+            <div class="metric-title">Wildlife Sightings</div>
+            <div class="metric-value">312</div>
+            <div class="metric-change positive">+2.1% vs last week</div>
+        </div>
+        <div class="metric-card">
+            <div class="metric-title">Fire Alerts</div>
+            <div class="metric-value">19</div>
+            <div class="metric-change negative">-1.5% vs yesterday</div>
+        </div>
+        <div class="metric-card">
+            <div class="metric-title">Afforestation Projects</div>
+            <div class="metric-value">8,940 Ha</div>
+            <div class="metric-change positive">+112 Ha this month</div>
+        </div>
+    </div>
+
+    <!-- Charts Section -->
+    <div class="section">
+        <div class="section-title">Incidents Reported vs Resolved (State-wise)</div>
+        <div class="chart-placeholder">
+            <div class="chart-title">Bar Chart</div>
+            <div class="chart-subtitle">State-wise incident data visualization</div>
+        </div>
+    </div>
+
+    <div class="section">
+        <div class="section-title">Wildlife Conflict Types</div>
+        <div class="chart-placeholder">
+            <div class="chart-title">Pie Chart</div>
+            <div class="chart-subtitle">Conflict type distribution</div>
+        </div>
+    </div>
+
+    <div class="section">
+        <div class="section-title">Patrol Activity Trends (Last 30 Days)</div>
+        <div class="chart-placeholder">
+            <div class="chart-title">Line Chart</div>
+            <div class="chart-subtitle">30-day patrol activity trend</div>
+        </div>
+    </div>
+
+    <div class="section">
+        <div class="section-title">Alerts Heatmap (GIS Placeholder)</div>
+        <div class="chart-placeholder">
+            <div class="chart-title">GIS Map View</div>
+            <div class="chart-subtitle">Interactive heatmap visualization</div>
+        </div>
+    </div>
+
+    <!-- Field Reports -->
+    <div class="section">
+        <div class="section-title">Latest Field Reports</div>
+        <div class="table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Date</th>
+                        <th>Division</th>
+                        <th>Incident Type</th>
+                        <th>Status</th>
+                        <th>Reported By</th>
+                        <th>Verified</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>02 Nov 2025, 14:30</td>
+                        <td>Corbett TR (Div-B)</td>
+                        <td>Poaching Evidence</td>
+                        <td><span class="status-badge status-unresolved">Unresolved</span></td>
+                        <td>Ranger R. Singh</td>
+                        <td>No</td>
+                    </tr>
+                    <tr>
+                        <td>02 Nov 2025, 11:15</td>
+                        <td>Kanha TR (Core)</td>
+                        <td>Animal Sighting</td>
+                        <td><span class="status-badge status-resolved">Resolved</span></td>
+                        <td>Guard P. Kumar</td>
+                        <td>Yes</td>
+                    </tr>
+                    <tr>
+                        <td>02 Nov 2025, 09:05</td>
+                        <td>Sariska TR (Buffer)</td>
+                        <td>Fire Alert (IoT)</td>
+                        <td><span class="status-badge status-pending">Pending</span></td>
+                        <td>Sensor ID #F-102</td>
+                        <td>No</td>
+                    </tr>
+                    <tr>
+                        <td>01 Nov 2025, 17:45</td>
+                        <td>Ranthambore NP</td>
+                        <td>Human-Animal Conflict</td>
+                        <td><span class="status-badge status-resolved">Resolved</span></td>
+                        <td>Citizen App</td>
+                        <td>Yes</td>
+                    </tr>
+                    <tr>
+                        <td>01 Nov 2025, 16:20</td>
+                        <td>Kaziranga NP</td>
+                        <td>Encroachment</td>
+                        <td><span class="status-badge status-unresolved">Unresolved</span></td>
+                        <td>Ranger M. Das</td>
+                        <td>Yes</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        <div class="view-all-btn">View All Reports</div>
+    </div>
+
+    <!-- AI Insights Panel -->
+    <div class="section">
+        <div class="ai-title">AI Insights Panel</div>
+
+        <div style="margin-bottom: 25px;">
+            <div class="section-title">Top 5 Poaching Hotspots (Predicted)</div>
+            <div class="hotspot-item">
+                <div class="hotspot-number">1</div>
+                <div class="hotspot-content">
+                    <div class="hotspot-name">Kaziranga (Zone C)</div>
+                    <div class="risk-bar-container">
+                        <div class="risk-bar risk-high" style="width: 82%;"></div>
+                    </div>
+                </div>
+                <div class="risk-text risk-high">82% Risk</div>
+            </div>
+            <div class="hotspot-item">
+                <div class="hotspot-number">2</div>
+                <div class="hotspot-content">
+                    <div class="hotspot-name">Corbett (Buffer)</div>
+                    <div class="risk-bar-container">
+                        <div class="risk-bar risk-high" style="width: 75%;"></div>
+                    </div>
+                </div>
+                <div class="risk-text risk-high">75% Risk</div>
+            </div>
+            <div class="hotspot-item">
+                <div class="hotspot-number">3</div>
+                <div class="hotspot-content">
+                    <div class="hotspot-name">Ranthambore (Zone 3)</div>
+                    <div class="risk-bar-container">
+                        <div class="risk-bar risk-medium" style="width: 68%;"></div>
+                    </div>
+                </div>
+                <div class="risk-text risk-medium">68% Risk</div>
+            </div>
+            <div class="hotspot-item">
+                <div class="hotspot-number">4</div>
+                <div class="hotspot-content">
+                    <div class="hotspot-name">Panna (Core)</div>
+                    <div class="risk-bar-container">
+                        <div class="risk-bar risk-medium" style="width: 61%;"></div>
+                    </div>
+                </div>
+                <div class="risk-text risk-medium">61% Risk</div>
+            </div>
+            <div class="hotspot-item">
+                <div class="hotspot-number">5</div>
+                <div class="hotspot-content">
+                    <div class="hotspot-name">Tadoba (Moharli)</div>
+                    <div class="risk-bar-container">
+                        <div class="risk-bar risk-low" style="width: 55%;"></div>
+                    </div>
+                </div>
+                <div class="risk-text risk-low">55% Risk</div>
+            </div>
+        </div>
+
+        <div style="margin-bottom: 25px;">
+            <div class="section-title">Carbon Credit Forecast</div>
+            <div class="forecast-card">
+                <div class="forecast-value">+1.2k tons CO₂e</div>
+                <div class="forecast-label">potential next quarter</div>
+            </div>
+        </div>
+
+        <div>
+            <div class="section-title">Upcoming Patrol Alerts</div>
+            <div class="alert-item">
+                <div class="alert-dot"></div>
+                <div class="alert-text">
+                    <span class="alert-location">Div-B (Corbett):</span> High-risk window in 48h.
+                </div>
+            </div>
+            <div class="alert-item">
+                <div class="alert-dot"></div>
+                <div class="alert-text">
+                    <span class="alert-location">Zone C (Kaziranga):</span> Patrol gap detected.
+                </div>
+            </div>
+            <div class="alert-item">
+                <div class="alert-dot" style="background: #ff9800;"></div>
+                <div class="alert-text">
+                    <span class="alert-location">Buffer (Kanha):</span> IoT Sensor #S-204 low battery.
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <div class="footer">
+        ONE NATION. ONE PLATFORM. — Unified Forest & Wildlife Data by PugArch Technology Pvt. Ltd.
+    </div>
+    </div>
+
+    <script>
+        function updateDateTime() {
+            const now = new Date();
+            const dateOptions = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+            const dateElement = document.getElementById('current-date');
+            if (dateElement) {
+                dateElement.textContent = now.toLocaleDateString('en-US', dateOptions);
+            }
+        }
+        updateDateTime();
+    </script>
+</body>
+</html>
+
